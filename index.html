@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кори илмӣ: DES ва AES</title>
+    <style>
+        :root {
+            --primary: #1a3c34;
+            --secondary: #0d211d;
+            --accent: #26a69a;
+            --text: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            background-color: #f0f4f3;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 70px 20px;
+            text-align: center;
+        }
+
+        /* Дизайни Плиткаҳо (Grid) */
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: -40px auto 60px;
+            padding: 0 20px;
+        }
+
+        .item-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .item-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-bottom: 5px solid var(--accent);
+        }
+
+        .item-card h3 { color: var(--primary); margin-bottom: 15px; font-size: 1.3rem; }
+        .item-card p { color: #7f8c8d; font-size: 0.95rem; }
+
+        /* Окнои нав (Modal Window) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-container {
+            background: white;
+            margin: 3% auto;
+            padding: 50px;
+            width: 85%;
+            max-width: 900px;
+            border-radius: 25px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+
+        .close-icon {
+            position: absolute;
+            right: 30px; top: 20px;
+            font-size: 45px;
+            cursor: pointer;
+            color: #ccc;
+        }
+
+        .close-icon:hover { color: var(--primary); }
+
+        /* Услуби матни илмӣ */
+        .article-content h2 { color: var(--primary); border-bottom: 3px solid #f1f1f1; padding-bottom: 15px; }
+        .article-content p { text-align: justify; text-indent: 40px; font-size: 1.15rem; margin-bottom: 20px; }
+        .article-content ul { list-style: none; padding: 0; }
+        .article-content li { background: #f9f9f9; padding: 15px; margin-bottom: 10px; border-left: 5px solid var(--accent); }
+
+        footer { text-align: center; padding: 50px; color: #95a5a6; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="https://iftut.tj/images/logo-min.png" style="max-width: 90px; margin-bottom: 20px;">
+    <h1>АЛГОРИТМҲО ВА ТАҲДИДҲОИ DES ВА AES</h1>
+    <p>Филиали Донишгоҳи технологии Тоҷикистон дар шаҳри Исфара</p>
+</header>
+
+<div class="main-grid">
+    <div class="item-card" onclick="openBox('intro')">
+        <h3>МУҚАДДИМА</h3>
+        <p>Аҳамияти амнияти иттилоотӣ ва ҳадафҳои кори илмӣ.</p>
+    </div>
+    <div class="item-card" onclick="openBox('des_hist')">
+        <h3>ТАЪРИХИ DES</h3>
+        <p>Пайдоиш ва стандартсозии алгоритми DES.</p>
+    </div>
+    <div class="item-card" onclick="openBox('des_limits')">
+        <h3>МАҲДУДИЯТҲО</h3>
+        <p>Осебпазириҳои техникӣ ва кӯҳнашавии DES.</p>
+    </div>
+    <div class="item-card" onclick="openBox('aes_tech')">
+        <h3>АЛГОРИТМИ AES</h3>
+        <p>Устуворӣ ва татбиқи он дар технологияҳои муосир.</p>
+    </div>
+    <div class="item-card" onclick="openBox('threats')">
+        <h3>ТАҲДИДҲО</h3>
+        <p>Ҳамлаҳои эҳтимолӣ ва хатарҳои киберӣ.</p>
+    </div>
+    <div class="item-card" onclick="openBox('conclusion')">
+        <h3>ХУЛОСА</h3>
+        <p>Натиҷагирӣ аз таҳқиқи алгоритмҳо.</p>
+    </div>
+    <div class="item-card" onclick="openBox('refs')">
+        <h3>АДАБИЁТ</h3>
+        <p>Рӯйхати манбаъҳои илмии истифодашуда.</p>
+    </div>
+</div>
+
+<div id="modalBox" class="modal-overlay">
+    <div class="modal-container">
+        <span class="close-icon" onclick="closeBox()">&times;</span>
+        <div id="articleData" class="article-content"></div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2025 | Кори илмии Каримов | ФДТТИ Исфара
+</footer>
+
+<script>
+    const database = {
+        intro: `<h2>Муқаддима</h2>
+            <p>Дар шароити рушди босуръати технологияҳои иттилоотӣ ва густариши ҷомеаи рақамӣ масъалаи амнияти иттилоотӣ яке аз самтҳои муҳим ва афзалиятнок ба ҳисоб меравад. Рамзгузорӣ ҳамчун воситаи асосии ҳифзи маълумот нақши калидӣ мебозад. Имрӯз иттилоот захираи стратегӣ буда, ҳифзи он аз дастрасии ғайриқонунӣ аҳамияти ҳаётӣ дорад.</p>
+            <p>Дар байни алгоритмҳои рамзгузории симметрӣ алгоритмҳои DES (Data Encryption Standard) ва AES (Advanced Encryption Standard) мавқеи махсус доранд. DES яке аз аввалин стандартҳои расмӣ буда, дар тӯли даҳсолаҳо ҳамчун воситаи асосии ҳифзи маълумот дар системаҳои давлатӣ ва тиҷоратӣ истифода мешуд. Аммо рушди компютерҳо нишон дод, ки DES дигар ба талаботи амнияти муосир ҷавобгӯ нест.</p>
+            <p>Ҳадафи асосии ин кори илмӣ омӯзиши сохтор, принсипи кор ва таҳлили муқоисавии ин ду алгоритм ва баррасии таҳдидҳо ба онҳо мебошад.</p>`,
+
+        des_hist: `<h2>Таърихи пайдоиш ва стандартсозии DES</h2>
+            
+            <p>Алгоритми DES (Data Encryption Standard) соли 1977 расман ҳамчун стандарти федералии рамзгузорӣ дар ИМА қабул гардид. Он аз ҷониби ширкати IBM дар асоси алгоритми Lucifer таҳия шуда буд. DES алгоритми рамзгузории блокӣ мебошад, ки дорои блоки 64 бит ва калиди 56 бит мебошад.</p>
+            <p>Дар давоми зиёда аз 20 сол он стандарти асосӣ барои системаҳои бонкӣ ва тиҷоратӣ дар тамоми ҷаҳон буд. Ин алгоритм бо истифода аз шабакаи Фейстел (Feistel network) сохта шудааст ва 16 раунди табдилдиҳиро дар бар мегирад.</p>`,
+
+        des_limits: `<h2>Афзалиятҳо ва маҳдудиятҳои DES</h2>
+            <p>Афзалияти асосии DES дар соддагии татбиқи техникӣ ва суръати баланди он буд. Аммо бо гузашти вақт, маҳдудияти асосии он — андозаи нисбатан хурди калид (56 бит) — ба мушкили ҷиддӣ табдил ёфт. Ин маънои онро дорад, ки шумораи умумии калидҳо 2^56 мебошад.</p>
+            <p>Соли 1998 дастгоҳи "DES Cracker" тавонист калиди DES-ро дар камтар аз 3 рӯз пайдо кунад. Имрӯз бошад, ин корро дар чанд соат иҷро кардан мумкин аст. Ин боис шуд, ки DES кӯҳна ва ноамн эътироф гардида, бо алгоритмҳои навтар иваз карда шавад.</p>`,
+
+        aes_tech: `<h2>AES ва татбиқи он дар технологияҳо</h2>
+            
+            <p>AES (Advanced Encryption Standard) соли 2001 ҳамчун стандарти нави рамзгузории ҷаҳонӣ қабул карда шуд. Бархлфои DES, он калидҳои 128, 192 ва 256 битро истифода мебарад. AES бо сохтори муосир ва сатҳи баланди устуворӣ ба ҳамлаҳои криптографӣ фарқ мекунад.</p>
+            <p>Имрӯз AES дар аксари системаҳои амниятӣ, аз ҷумла протоколҳои SSL/TLS (барои HTTPS), шабакаҳои хусусии виртуалӣ (VPN), системаҳои оператсионӣ ва ҳифзи дискҳои сахт истифода мешавад. Масалан, вақте шумо дар браузер калимаи "HTTPS"-ро мебинед, аксаран AES барои рамзгузории трафики шумо кор мекунад.</p>`,
+
+        threats: `<h2>Таҳдидҳо ва ҳамлаҳои эҳтимолӣ</h2>
+            <p>Гарчанде ки AES аз ҷиҳати математикӣ хеле қавӣ аст, таҳдидҳо асосан ба тарзи татбиқ ва истифодаи он вобастаанд. Ҳамлаҳои паҳлуӣ (Side-channel attacks) яке аз хатарҳои асосӣ мебошанд. Ин ҳамлаҳо ба чен кардани истеъмоли энергия ва вақти ҳисоббарории протсессор ҳангоми рамзгузорӣ асос меёбанд.</p>
+            <p>Инчунин, рушди компютерҳои квантӣ хатари ҷиддӣ эҷод мекунад. Алгоритми квантии Гровер метавонад калиди AES-128-ро то 64 бит заиф кунад. Аз ин рӯ, дар оянда истифодаи AES-256 барои муқовимат ба ҳамлаҳои квантӣ зарур ҳисобида мешавад.</p>`,
+
+        conclusion: `<h2>Хулоса</h2>
+            <p>Омӯзиши алгоритмҳои DES ва AES нишон медиҳад, ки амнияти иттилоотӣ раванди доимист. DES ҳамчун таҷрибаи таърихӣ дарси муҳим дар бораи маҳдудиятҳои стандартҳои кӯҳна медиҳад, дар ҳоле ки AES намунаи алгоритми муосир ва боэътимод мебошад.</p>
+            <p>Дар шароити таҳдидҳои рӯзафзуни киберӣ, истифодаи дурусти алгоритмҳои пурқуввати рамзгузорӣ ва такмили доимии дониш дар соҳаи криптография омили асосии ҳифзи маълумот ба ҳисоб меравад.</p>`,
+
+        refs: `<h2>Рӯйхати адабиёти истифодашуда</h2>
+            <ul>
+                <li><li>Шнайер Б. Прикладная криптография: Протоколы, алгоритмы и исходные тексты программ. – М.: Диалектика, 2016.</li>
+                <li>Столлингс У. Криптография и безопасность сетей: принципы и практика. – М.: Вильямс, 2019.</li>
+                <li>Menezes A., van Oorschot P., Vanstone S. Handbook of Applied Cryptography. – CRC Press, 2018.</li>
+                <li>NIST. FIPS PUB 197: Advanced Encryption Standard (AES). – 2001.</li></li>
+            </ul>`
+    };
+
+    function openBox(topic) {
+        document.getElementById('articleData').innerHTML = database[topic];
+        document.getElementById('modalBox').style.display = "block";
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeBox() {
+        document.getElementById('modalBox').style.display = "none";
+        document.body.style.overflow = "auto";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('modalBox')) {
+            closeBox();
+        }
+    }
+</script>
+
+</body>
+</html>
